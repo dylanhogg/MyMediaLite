@@ -45,9 +45,14 @@ namespace MyMediaLite.Correlation
 			{
 				cm = new BinaryCosine(num_entities);
 			}
-			catch (OverflowException)
+            catch (OutOfMemoryException ex)
+            {
+                Console.Error.WriteLine("Too many entities: " + num_entities + " ex: " + ex);
+                throw;
+            }
+			catch (OverflowException ex)
 			{
-				Console.Error.WriteLine("Too many entities: " + num_entities);
+                Console.Error.WriteLine("Too many entities: " + num_entities + " ex: " + ex);
 				throw;
 			}
 			cm.ComputeCorrelations(vectors);

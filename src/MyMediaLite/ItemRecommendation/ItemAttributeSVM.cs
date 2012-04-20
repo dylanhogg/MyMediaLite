@@ -58,7 +58,7 @@ namespace MyMediaLite.ItemRecommendation
 		///
 		public override void Train()
 		{
-			int num_users = Feedback.UserMatrix.NumberOfRows;
+            int num_users = Feedback.UserMatrix.NumberOfRows;   // DH: should be based on MaxUserID for cold case? TODO: investigate.
 			int num_items = Feedback.ItemMatrix.NumberOfRows;
 
 			var svm_features = new List<Node[]>();
@@ -98,6 +98,11 @@ namespace MyMediaLite.ItemRecommendation
 		///
 		public override float Predict(int user_id, int item_id)
 		{
+            if ((user_id < 0) || (user_id > MaxUserID))
+                return float.MinValue;
+            if ((item_id < 0) || (item_id > MaxItemID))
+                return float.MinValue;
+
 			// TODO speed improvement: do not create nodes on the fly
 			return (float) SVM.Prediction.Predict(models[user_id], CreateNodes(item_id));
 			// TODO make sure we return score, not class

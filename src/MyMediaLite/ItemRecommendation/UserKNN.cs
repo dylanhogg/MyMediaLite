@@ -23,61 +23,69 @@ using MyMediaLite.Util;
 
 namespace MyMediaLite.ItemRecommendation
 {
-	/// <summary>k-nearest neighbor user-based collaborative filtering using cosine-similarity (unweighted)</summary>
-	/// <remarks>
-	/// k=inf equals most-popular.
-	///
-	/// This recommender does NOT support incremental updates.
-	/// </remarks>
-	public class UserKNN : KNN, IUserSimilarityProvider
-	{
-		///
-		public override void Train()
-		{
-			this.correlation = BinaryCosine.Create(Feedback.UserMatrix);
+    /// <summary>k-nearest neighbor user-based collaborative filtering using cosine-similarity (unweighted)</summary>
+    /// <remarks>
+    /// k=inf equals most-popular.
+    ///
+    /// This recommender does NOT support incremental updates.
+    /// </remarks>
+    public class UserKNN : KNN, IUserSimilarityProvider
+    {
+        ///
+        public override void Train()
+        {
+            this.correlation = BinaryCosine.Create(Feedback.UserMatrix);
 
-			int num_users = MaxUserID + 1;
-			this.nearest_neighbors = new int[num_users][];
-			for (int u = 0; u < num_users; u++)
-				nearest_neighbors[u] = correlation.GetNearestNeighbors(u, k);
-		}
+            int num_users = MaxUserID + 1;
+            this.nearest_neighbors = new int[num_users][];
+            int percent = 0;
+            for (int u = 0; u < num_users; u++)
+            {
+                if (u % (num_users / 100) == 0)
+                {
+                    Console.Write(percent + "% ");
+                    percent++;
+                }
+                nearest_neighbors[u] = correlation.GetNearestNeighbors(u, k);
+            }
+        }
 
-		///
-		public override float Predict(int user_id, int item_id)
-		{
-			if ((user_id < 0) || (user_id > MaxUserID))
-				return float.MinValue;
-			if ((item_id < 0) || (item_id > MaxItemID))
-				return float.MinValue;
+        ///
+        public override float Predict(int user_id, int item_id)
+        {
+            if ((user_id < 0) || (user_id > MaxUserID))
+                return float.MinValue;
+            if ((item_id < 0) || (item_id > MaxItemID))
+                return float.MinValue;
 
-			int count = 0;
-			foreach (int neighbor in nearest_neighbors[user_id])
-				if (Feedback.UserMatrix[neighbor, item_id])
-					count++;
-			return (float) count / k;
-		}
+            int count = 0;
+            foreach (int neighbor in nearest_neighbors[user_id])
+                if (Feedback.UserMatrix[neighbor, item_id])
+                    count++;
+            return (float)(1.0 * count / k);  // DH: aded 1.0 for return fractional float.  TODO: is there a reason this was returning only 0.0/1.0 before?
+        }
 
-		///
-		public float GetUserSimilarity(int user_id1, int user_id2)
-		{
-			return correlation[user_id1, user_id2];
-		}
+        ///
+        public float GetUserSimilarity(int user_id1, int user_id2)
+        {
+            return correlation[user_id1, user_id2];
+        }
 
-		///
-		public IList<int> GetMostSimilarUsers(int user_id, uint n = 10)
-		{
-			if (n == k)
-				return nearest_neighbors[user_id];
-			else if (n < k)
-				return nearest_neighbors[user_id].Take((int) n).ToArray();
-			else
-				return correlation.GetNearestNeighbors(user_id, n);
-		}
+        ///
+        public IList<int> GetMostSimilarUsers(int user_id, uint n = 10u)
+        {
+            if (n == k)
+                return nearest_neighbors[user_id];
+            else if (n < k)
+                return nearest_neighbors[user_id].Take((int)n).ToArray();
+            else
+                return correlation.GetNearestNeighbors(user_id, n);
+        }
 
-		///
-		public override string ToString()
-		{
-			return string.Format("UserKNN k={0}", k == uint.MaxValue ? "inf" : k.ToString());
-		}
-	}
+        ///
+        public override string ToString()
+        {
+            return string.Format("UserKNN k={0}", k == uint.MaxValue ? "inf" : k.ToString());
+        }
+    }
 }
