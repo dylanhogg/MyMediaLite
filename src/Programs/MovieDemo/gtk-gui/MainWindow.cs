@@ -127,7 +127,7 @@ public partial class MainWindow
 		this.vbox1.Name = "vbox1";
 		this.vbox1.Spacing = 6;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><menubar name='menubar1'><menu name='FilterAction' action='FilterAction'><menuitem name='OnlyShow200MostPopularMoviesAction' action='OnlyShow200MostPopularMoviesAction'/></menu><menu name='LanguageAction' action='LanguageAction'><menuitem name='EnglishAction' action='EnglishAction'/><menuitem name='DeutschAction' action='DeutschAction'/></menu><menu name='UserAction' action='UserAction'><menuitem name='SaveRatingsAnonymouslyAction' action='SaveRatingsAnonymouslyAction'/><menuitem name='DiscardRatingsAction' action='DiscardRatingsAction'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FilterAction' action='FilterAction'><menuitem name='OnlyShow200MostPopularMoviesAction' action='OnlyShow200MostPopularMoviesAction'/></menu><menu name='LanguageAction' action='LanguageAction'><menuitem name='EnglishAction' action='EnglishAction'/><menuitem name='DeutschAction' action='DeutschAction'/></menu><menu name='UserAction' action='UserAction'><menuitem name='SaveRatingsAnonymouslyAction' action='SaveRatingsAnonymouslyAction'/><menuitem name='DiscardRatingsAction' action='DiscardRatingsAction'/></menu></menubar></ui>");
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.vbox1.Add (this.menubar1);
@@ -158,7 +158,7 @@ public partial class MainWindow
 		this.scrolledwindow2.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child scrolledwindow2.Gtk.Container+ContainerChild
 		this.treeview1 = new global::Gtk.TreeView ();
-		this.treeview1.TooltipMarkup = "Click in column 'Rating' to enter ratings";
+		this.treeview1.TooltipMarkup = "Click in column \'Rating\' to enter ratings";
 		this.treeview1.CanFocus = true;
 		this.treeview1.Name = "treeview1";
 		this.scrolledwindow2.Add (this.treeview1);
